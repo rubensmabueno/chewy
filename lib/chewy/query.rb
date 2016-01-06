@@ -18,7 +18,7 @@ module Chewy
     include Loading
     include Pagination
 
-    RESULT_MERGER = lambda do |key, old_value, new_value|
+    RESULT_MERGER = lambda do |_key, old_value, new_value|
       if old_value.is_a?(Hash) && new_value.is_a?(Hash)
         old_value.merge(new_value, &RESULT_MERGER)
       elsif new_value.is_a?(Array) && new_value.count > 1

@@ -2,7 +2,7 @@ module Chewy
   module RakeHelper
     class << self
       def subscribe_task_stats!
-        ActiveSupport::Notifications.subscribe('import_objects.chewy') do |name, start, finish, id, payload|
+        ActiveSupport::Notifications.subscribe('import_objects.chewy') do |_name, start, finish, _id, payload|
           duration = (finish - start).round(2)
           puts "  Imported #{payload[:type]} for #{duration}s, documents total: #{payload[:import].try(:[], :index).to_i}"
           payload[:errors].each do |action, errors|

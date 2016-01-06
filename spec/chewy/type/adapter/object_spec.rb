@@ -43,12 +43,12 @@ describe Chewy::Type::Adapter::Object do
       result
     end
 
-    specify { expect(subject.import(3.times.map { |i| double }) { |data| true }).to eq(true) }
-    specify { expect(subject.import(3.times.map { |i| double }) { |data| false }).to eq(false) }
+    specify { expect(subject.import(3.times.map { |_i| double }) { |_data| true }).to eq(true) }
+    specify { expect(subject.import(3.times.map { |_i| double }) { |_data| false }).to eq(false) }
 
     context do
-      let(:objects) { 3.times.map { |i| double } }
-      let(:deleted) { 2.times.map { |i| double(destroyed?: true) } }
+      let(:objects) { 3.times.map { |_i| double } }
+      let(:deleted) { 2.times.map { |_i| double(destroyed?: true) } }
       subject { described_class.new('product') }
 
       specify { expect(import).to eq([]) }
@@ -110,8 +110,8 @@ describe Chewy::Type::Adapter::Object do
         ->(n, data) { (data[:index] || data[:delete]).first.rating != n }
       end
 
-      specify { expect(subject.import(products, deleted) { |data| true }).to eq(true) }
-      specify { expect(subject.import(products, deleted) { |data| false }).to eq(false) }
+      specify { expect(subject.import(products, deleted) { |_data| true }).to eq(true) }
+      specify { expect(subject.import(products, deleted) { |_data| false }).to eq(false) }
       specify { expect(subject.import(products, deleted, batch_size: 1, &data_comparer.curry[1])).to eq(false) }
       specify { expect(subject.import(products, deleted, batch_size: 1, &data_comparer.curry[2])).to eq(false) }
       specify { expect(subject.import(products, deleted, batch_size: 1, &data_comparer.curry[3])).to eq(false) }
@@ -123,7 +123,7 @@ describe Chewy::Type::Adapter::Object do
   describe '#load' do
     context do
       subject { described_class.new('product') }
-      let(:objects) { 3.times.map { |i| double } }
+      let(:objects) { 3.times.map { |_i| double } }
 
       specify { expect(subject.load(objects)).to eq(objects) }
     end
@@ -132,15 +132,15 @@ describe Chewy::Type::Adapter::Object do
       context do
         before { allow(Product).to receive(load_method) { |object| allow(object).to receive_messages(wrapped?: true); object } }
         subject { described_class.new(Product) }
-        let(:objects) { 3.times.map { |i| double(wrapped?: false) } }
+        let(:objects) { 3.times.map { |_i| double(wrapped?: false) } }
 
         specify { expect(subject.load(objects)).to satisfy { |objects| objects.all?(&:wrapped?) } }
       end
 
       context do
-        before { allow(Product).to receive(load_method) { |object| nil } }
+        before { allow(Product).to receive(load_method) { |_object| nil } }
         subject { described_class.new(Product) }
-        let(:objects) { 3.times.map { |i| double(wrapped?: false) } }
+        let(:objects) { 3.times.map { |_i| double(wrapped?: false) } }
 
         specify { expect(subject.load(objects)).to satisfy { |objects| objects.all?(&:nil?) } }
       end

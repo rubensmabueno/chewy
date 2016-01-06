@@ -5,7 +5,7 @@ module Chewy
         def initialize(script, params = {})
           @script = script
           @params = params
-          @options = params.reject { |k, v| ![:cache].include?(k) }
+          @options = params.reject { |k, _v| ![:cache].include?(k) }
         end
 
         def __render__

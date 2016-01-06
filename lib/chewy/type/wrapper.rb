@@ -19,7 +19,7 @@ module Chewy
         end
       end
 
-      def method_missing(method, *args, &block)
+      def method_missing(method, *_args, &_block)
         @attributes[method.to_s] if @attributes.key?(method.to_s)
       end
 

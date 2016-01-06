@@ -207,7 +207,7 @@ describe Chewy::Type::Adapter::Sequel, :sequel do
 
     context 'default scope' do
       let!(:cities) { 4.times.map { |i| City.create!(rating: i / 3) } }
-      let!(:deleted) { 3.times.map { |i| City.create!.tap(&:destroy) } }
+      let!(:deleted) { 3.times.map { |_i| City.create!.tap(&:destroy) } }
       subject { described_class.new(City.where(rating: 0)) }
 
       specify { expect(import).to eq([{ index: cities.first(3) }]) }
@@ -274,8 +274,8 @@ describe Chewy::Type::Adapter::Sequel, :sequel do
     end
 
     context 'error handling' do
-      let!(:cities) { 3.times.map { |i| City.create! } }
-      let!(:deleted) { 2.times.map { |i| City.create!.tap(&:destroy) } }
+      let!(:cities) { 3.times.map { |_i| City.create! } }
+      let!(:deleted) { 2.times.map { |_i| City.create!.tap(&:destroy) } }
       let(:ids) { (cities + deleted).map(&:id) }
       subject { described_class.new(City) }
 
@@ -284,8 +284,8 @@ describe Chewy::Type::Adapter::Sequel, :sequel do
       end
 
       context 'implicit scope' do
-        specify { expect(subject.import { |data| true }).to eq(true) }
-        specify { expect(subject.import { |data| false }).to eq(false) }
+        specify { expect(subject.import { |_data| true }).to eq(true) }
+        specify { expect(subject.import { |_data| false }).to eq(false) }
         specify { expect(subject.import(batch_size: 1, &data_comparer.curry[cities[0].id])).to eq(false) }
         specify { expect(subject.import(batch_size: 1, &data_comparer.curry[cities[1].id])).to eq(false) }
         specify { expect(subject.import(batch_size: 1, &data_comparer.curry[cities[2].id])).to eq(false) }
@@ -296,8 +296,8 @@ describe Chewy::Type::Adapter::Sequel, :sequel do
       context 'explicit scope' do
         let(:scope) { City.where(id: ids) }
 
-        specify { expect(subject.import(scope) { |data| true }).to eq(true) }
-        specify { expect(subject.import(scope) { |data| false }).to eq(false) }
+        specify { expect(subject.import(scope) { |_data| true }).to eq(true) }
+        specify { expect(subject.import(scope) { |_data| false }).to eq(false) }
         specify { expect(subject.import(scope, batch_size: 1, &data_comparer.curry[cities[0].id])).to eq(false) }
         specify { expect(subject.import(scope, batch_size: 1, &data_comparer.curry[cities[1].id])).to eq(false) }
         specify { expect(subject.import(scope, batch_size: 1, &data_comparer.curry[cities[2].id])).to eq(false) }
@@ -306,8 +306,8 @@ describe Chewy::Type::Adapter::Sequel, :sequel do
       end
 
       context 'objects' do
-        specify { expect(subject.import(cities + deleted) { |data| true }).to eq(true) }
-        specify { expect(subject.import(cities + deleted) { |data| false }).to eq(false) }
+        specify { expect(subject.import(cities + deleted) { |_data| true }).to eq(true) }
+        specify { expect(subject.import(cities + deleted) { |_data| false }).to eq(false) }
         specify { expect(subject.import(cities + deleted, batch_size: 1, &data_comparer.curry[cities[0].id])).to eq(false) }
         specify { expect(subject.import(cities + deleted, batch_size: 1, &data_comparer.curry[cities[1].id])).to eq(false) }
         specify { expect(subject.import(cities + deleted, batch_size: 1, &data_comparer.curry[cities[2].id])).to eq(false) }
@@ -316,8 +316,8 @@ describe Chewy::Type::Adapter::Sequel, :sequel do
       end
 
       context 'ids' do
-        specify { expect(subject.import(ids) { |data| true }).to eq(true) }
-        specify { expect(subject.import(ids) { |data| false }).to eq(false) }
+        specify { expect(subject.import(ids) { |_data| true }).to eq(true) }
+        specify { expect(subject.import(ids) { |_data| false }).to eq(false) }
         specify { expect(subject.import(ids, batch_size: 1, &data_comparer.curry[cities[0].id])).to eq(false) }
         specify { expect(subject.import(ids, batch_size: 1, &data_comparer.curry[cities[1].id])).to eq(false) }
         specify { expect(subject.import(ids, batch_size: 1, &data_comparer.curry[cities[2].id])).to eq(false) }
@@ -330,7 +330,7 @@ describe Chewy::Type::Adapter::Sequel, :sequel do
   describe '#load' do
     context do
       let!(:cities) { 3.times.map { |i| City.create!(rating: i / 2) } }
-      let!(:deleted) { 2.times.map { |i| City.create!.tap(&:destroy) } }
+      let!(:deleted) { 2.times.map { |_i| City.create!.tap(&:destroy) } }
 
       let(:type) { double(type_name: 'user') }
 

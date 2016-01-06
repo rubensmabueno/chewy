@@ -2,7 +2,7 @@ require 'chewy/rake_helper'
 
 namespace :chewy do
   desc 'Destroy, recreate and import data to specified index'
-  task :reset, [:index] => :environment do |task, args|
+  task :reset, [:index] => :environment do |_task, args|
     Chewy::RakeHelper.subscribe_task_stats!
 
     if args[:index].present?
@@ -21,7 +21,7 @@ namespace :chewy do
   end
 
   desc 'Updates data specified index'
-  task :update, [:index] => :environment do |task, args|
+  task :update, [:index] => :environment do |_task, args|
     Chewy::RakeHelper.subscribe_task_stats!
 
     if args[:index].present?

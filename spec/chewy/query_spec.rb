@@ -428,8 +428,8 @@ describe Chewy::Query do
 
   describe '#find' do
     let(:products) { 3.times.map { |i| { id: i.next.to_s, name: "Name#{i.next}", age: 10 * i.next }.stringify_keys! } }
-    let(:cities) { 1.times.map { |i| { id: '4' }.stringify_keys! } }
-    let(:countries) { 1.times.map { |i| { id: '4' }.stringify_keys! } }
+    let(:cities) { 1.times.map { |_i| { id: '4' }.stringify_keys! } }
+    let(:countries) { 1.times.map { |_i| { id: '4' }.stringify_keys! } }
 
     before do
       ProductsIndex::Product.import!(products.map { |h| double(h) })

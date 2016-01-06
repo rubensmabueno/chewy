@@ -270,41 +270,41 @@ describe Chewy::Query::Criteria do
     specify { expect(request_body { update_queries(:query) }).to eq(body: { query: :query }) }
     specify do
       expect(request_body do
-      update_scores(script_score: { script: '_score' })
-    end).to eq(body: { query: { function_score: { functions: [{ script_score: { script: '_score' } }] } } }) end
+        update_scores(script_score: { script: '_score' })
+      end).to eq(body: { query: { function_score: { functions: [{ script_score: { script: '_score' } }] } } }) end
     specify do
       expect(request_body do
-      update_scores(script_score: { script: 'boost_me' })
-      update_queries(:query)
-      update_options(boost_mode: :add)
-      update_options(score_mode: :avg)
-    end).to eq(body: { query: {
-                 function_score: {
-                   functions: [{
-                     script_score: { script: 'boost_me' }
-                   }],
-                   query: :query,
-                   boost_mode: :add,
-                   score_mode: :avg
-                 } } })
+        update_scores(script_score: { script: 'boost_me' })
+        update_queries(:query)
+        update_options(boost_mode: :add)
+        update_options(score_mode: :avg)
+      end).to eq(body: { query: {
+                   function_score: {
+                     functions: [{
+                       script_score: { script: 'boost_me' }
+                     }],
+                     query: :query,
+                     boost_mode: :add,
+                     score_mode: :avg
+                   } } })
     end
     specify do
       expect(request_body do
-      update_request_options(from: 10); update_sort(:field); update_fields(:field); update_queries(:query)
-    end).to eq(body: { query: :query, from: 10, sort: [:field], _source: ['field'] }) end
+        update_request_options(from: 10); update_sort(:field); update_fields(:field); update_queries(:query)
+      end).to eq(body: { query: :query, from: 10, sort: [:field], _source: ['field'] }) end
 
     specify do
       expect(request_body do
-      update_queries(:query); update_filters(:filters)
-    end).to eq(body: { query: { filtered: { query: :query, filter: :filters } } }) end
+        update_queries(:query); update_filters(:filters)
+      end).to eq(body: { query: { filtered: { query: :query, filter: :filters } } }) end
     specify do
       expect(request_body do
-      update_queries(:query); update_post_filters(:post_filter)
-    end).to eq(body: { query: :query, post_filter: :post_filter }) end
+        update_queries(:query); update_post_filters(:post_filter)
+      end).to eq(body: { query: :query, post_filter: :post_filter }) end
     specify do
       expect(request_body do
-      update_script_fields(distance_m: { script: "doc['coordinates'].distanceInMiles(lat, lon)" })
-    end).to eq(body: { script_fields: { distance_m: { script: "doc['coordinates'].distanceInMiles(lat, lon)" } } }) end
+        update_script_fields(distance_m: { script: "doc['coordinates'].distanceInMiles(lat, lon)" })
+      end).to eq(body: { script_fields: { distance_m: { script: "doc['coordinates'].distanceInMiles(lat, lon)" } } }) end
   end
 
   describe '#_filtered_query' do

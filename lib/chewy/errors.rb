@@ -12,7 +12,7 @@ module Chewy
   end
 
   class UndefinedUpdateStrategy < Error
-    def initialize(type)
+    def initialize(_type)
       super <<-MESSAGE
 Index update strategy is undefined in current context.
 Please wrap your code with `Chewy.strategy(:strategy_name) block.`

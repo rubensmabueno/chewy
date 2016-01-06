@@ -60,13 +60,13 @@ describe Chewy::Query::Filters do
     specify { query { should(email == 'email') }.should be_eql Bool(should: [Equal(:email, 'email')]) }
     specify do
       query do
-      must(email == 'email').should(address != 'address', age == 42)
-        .must_not(sex == 'm').must(name == 'name')
-    end.should be_eql Bool(
-      must: [Equal(:email, 'email'), Equal(:name, 'name')],
-      must_not: [Equal(:sex, 'm')],
-      should: [Not(Equal(:address, 'address')), Equal(:age, 42)]
-    )
+        must(email == 'email').should(address != 'address', age == 42)
+          .must_not(sex == 'm').must(name == 'name')
+      end.should be_eql Bool(
+        must: [Equal(:email, 'email'), Equal(:name, 'name')],
+        must_not: [Equal(:sex, 'm')],
+        should: [Not(Equal(:address, 'address')), Equal(:age, 42)]
+      )
     end
   end
 

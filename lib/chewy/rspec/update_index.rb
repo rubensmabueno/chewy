@@ -82,7 +82,7 @@ RSpec::Matchers.define :update_index do |type_name, options = {}|
   #   specify { expect { [user1, user2].map(&:save!) }
   #     .to update_index(UsersIndex.user).and_reindex(user1).only }
   #
-  chain(:only) do |*args|
+  chain(:only) do |*_args|
     @only = true
   end
 
@@ -185,8 +185,8 @@ RSpec::Matchers.define :update_index do |type_name, options = {}|
   failure_message_when_negated do
     if @updated.any?
       "Expected index `#{type_name}` not to be updated, but it was with #{@updated.map(&:values).flatten.group_by { |documents| documents[:_id] }.map do |id, documents|
-          "\n  document id `#{id}` (#{documents.count} times)"
-        end.join}\n"
+        "\n  document id `#{id}` (#{documents.count} times)"
+      end.join}\n"
     end
   end
 

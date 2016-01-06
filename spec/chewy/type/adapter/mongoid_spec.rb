@@ -64,8 +64,8 @@ describe Chewy::Type::Adapter::Mongoid, :mongoid do
     end
 
     context do
-      let!(:cities) { 3.times.map { |i| City.create! }.sort_by(&:id) }
-      let!(:deleted) { 4.times.map { |i| City.create!.tap(&:destroy) }.sort_by(&:id) }
+      let!(:cities) { 3.times.map { |_i| City.create! }.sort_by(&:id) }
+      let!(:deleted) { 4.times.map { |_i| City.create!.tap(&:destroy) }.sort_by(&:id) }
       subject { described_class.new(City) }
 
       specify { expect(import).to match([{ index: match_array(cities) }]) }
@@ -218,8 +218,8 @@ describe Chewy::Type::Adapter::Mongoid, :mongoid do
     end
 
     context 'error handling' do
-      let!(:cities) { 6.times.map { |i| City.create! } }
-      let!(:deleted) { 4.times.map { |i| City.create!.tap(&:destroy) } }
+      let!(:cities) { 6.times.map { |_i| City.create! } }
+      let!(:deleted) { 4.times.map { |_i| City.create!.tap(&:destroy) } }
       let(:ids) { (cities + deleted).map(&:id) }
       subject { described_class.new(City) }
 
@@ -228,8 +228,8 @@ describe Chewy::Type::Adapter::Mongoid, :mongoid do
       end
 
       context 'implicit scope' do
-        specify { expect(subject.import { |data| true }).to eq(true) }
-        specify { expect(subject.import { |data| false }).to eq(false) }
+        specify { expect(subject.import { |_data| true }).to eq(true) }
+        specify { expect(subject.import { |_data| false }).to eq(false) }
         specify { expect(subject.import(batch_size: 2, &data_comparer.curry[cities[0].id])).to eq(false) }
         specify { expect(subject.import(batch_size: 2, &data_comparer.curry[cities[2].id])).to eq(false) }
         specify { expect(subject.import(batch_size: 2, &data_comparer.curry[cities[4].id])).to eq(false) }
@@ -240,8 +240,8 @@ describe Chewy::Type::Adapter::Mongoid, :mongoid do
       context 'explicit scope' do
         let(:scope) { City.where(:id.in => ids) }
 
-        specify { expect(subject.import(scope) { |data| true }).to eq(true) }
-        specify { expect(subject.import(scope) { |data| false }).to eq(false) }
+        specify { expect(subject.import(scope) { |_data| true }).to eq(true) }
+        specify { expect(subject.import(scope) { |_data| false }).to eq(false) }
         specify { expect(subject.import(scope, batch_size: 2, &data_comparer.curry[cities[0].id])).to eq(false) }
         specify { expect(subject.import(scope, batch_size: 2, &data_comparer.curry[cities[2].id])).to eq(false) }
         specify { expect(subject.import(scope, batch_size: 2, &data_comparer.curry[cities[4].id])).to eq(false) }
@@ -250,8 +250,8 @@ describe Chewy::Type::Adapter::Mongoid, :mongoid do
       end
 
       context 'objects' do
-        specify { expect(subject.import(cities + deleted) { |data| true }).to eq(true) }
-        specify { expect(subject.import(cities + deleted) { |data| false }).to eq(false) }
+        specify { expect(subject.import(cities + deleted) { |_data| true }).to eq(true) }
+        specify { expect(subject.import(cities + deleted) { |_data| false }).to eq(false) }
         specify { expect(subject.import(cities + deleted, batch_size: 2, &data_comparer.curry[cities[0].id])).to eq(false) }
         specify { expect(subject.import(cities + deleted, batch_size: 2, &data_comparer.curry[cities[2].id])).to eq(false) }
         specify { expect(subject.import(cities + deleted, batch_size: 2, &data_comparer.curry[cities[4].id])).to eq(false) }
@@ -260,8 +260,8 @@ describe Chewy::Type::Adapter::Mongoid, :mongoid do
       end
 
       context 'ids' do
-        specify { expect(subject.import(ids) { |data| true }).to eq(true) }
-        specify { expect(subject.import(ids) { |data| false }).to eq(false) }
+        specify { expect(subject.import(ids) { |_data| true }).to eq(true) }
+        specify { expect(subject.import(ids) { |_data| false }).to eq(false) }
         specify { expect(subject.import(ids, batch_size: 2, &data_comparer.curry[cities[0].id])).to eq(false) }
         specify { expect(subject.import(ids, batch_size: 2, &data_comparer.curry[cities[2].id])).to eq(false) }
         specify { expect(subject.import(ids, batch_size: 2, &data_comparer.curry[cities[4].id])).to eq(false) }

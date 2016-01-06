@@ -205,20 +205,20 @@ describe Chewy::Index do
     specify { expect(stub_index(:documents) { define_type :document }.mappings_hash).to eq({}) }
     specify do
       expect(stub_index(:documents) do
-      define_type :document do
-        field :name, type: 'string'
-      end
-    end.mappings_hash).to eq(mappings: { document: { properties: { name: { type: 'string' } } } })
+        define_type :document do
+          field :name, type: 'string'
+        end
+      end.mappings_hash).to eq(mappings: { document: { properties: { name: { type: 'string' } } } })
     end
     specify do
       expect(stub_index(:documents) do
-      define_type :document do
-        field :name, type: 'string'
-      end
-      define_type :document2 do
-        field :name, type: 'string'
-      end
-    end.mappings_hash[:mappings].keys).to match_array([:document, :document2])
+        define_type :document do
+          field :name, type: 'string'
+        end
+        define_type :document2 do
+          field :name, type: 'string'
+        end
+      end.mappings_hash[:mappings].keys).to match_array([:document, :document2])
     end
   end
 
@@ -229,18 +229,18 @@ describe Chewy::Index do
     specify { expect(stub_index(:documents) { settings number_of_shards: 1 }.index_params.keys).to eq([:settings]) }
     specify do
       expect(stub_index(:documents) do
-      define_type :document do
-        field :name, type: 'string'
-      end
-    end.index_params.keys).to eq([:mappings])
+        define_type :document do
+          field :name, type: 'string'
+        end
+      end.index_params.keys).to eq([:mappings])
     end
     specify do
       expect(stub_index(:documents) do
-      settings number_of_shards: 1
-      define_type :document do
-        field :name, type: 'string'
-      end
-    end.index_params.keys).to match_array([:mappings, :settings])
+        settings number_of_shards: 1
+        define_type :document do
+          field :name, type: 'string'
+        end
+      end.index_params.keys).to match_array([:mappings, :settings])
     end
   end
 end

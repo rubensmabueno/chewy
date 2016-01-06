@@ -57,7 +57,7 @@ module Chewy
     end
 
     def self.const_missing(name)
-      to_resolve = "#{to_s}::#{name}"
+      to_resolve = "#{self}::#{name}"
       to_resolve[index.to_s] = ''
 
       @__resolved_constants ||= {}
