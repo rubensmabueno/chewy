@@ -54,7 +54,7 @@ module Chewy
                  other.criteria == criteria
                else
                  to_a == other
-      end
+               end
     end
 
     # Adds <tt>explain</tt> parameter to search request.
@@ -1019,8 +1019,7 @@ module Chewy
     def _collection
       @_collection ||= begin
         _load_objects! if criteria.options[:preload]
-        criteria.options[:preload] && criteria.options[:loaded_objects] ?
-          _results.map(&:_object) : _results
+        criteria.options[:preload] && criteria.options[:loaded_objects] ? _results.map(&:_object) : _results
       end
     end
 

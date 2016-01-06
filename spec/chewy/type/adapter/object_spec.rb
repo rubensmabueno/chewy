@@ -130,7 +130,12 @@ describe Chewy::Type::Adapter::Object do
 
     [:wrap, :load_one].each do |load_method|
       context do
-        before { allow(Product).to receive(load_method) { |object| allow(object).to receive_messages(wrapped?: true); object } }
+        before do
+          allow(Product).to receive(load_method) do |object|
+            allow(object).to receive_messages(wrapped?: true)
+            object
+          end
+        end
         subject { described_class.new(Product) }
         let(:objects) { 3.times.map { |_i| double(wrapped?: false) } }
 

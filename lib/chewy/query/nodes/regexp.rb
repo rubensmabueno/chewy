@@ -8,20 +8,25 @@ module Chewy
           @name = name.to_s
           @regexp = regexp.respond_to?(:source) ? regexp.source : regexp.to_s
           @options = args.extract_options!
-          if args.any? || @options[:flags].present?
-            @options[:flags] = FLAGS & (args.any? ? args.flatten : @options[:flags]).map(&:to_s).map(&:downcase)
-          end
+          return unless args.any? || @options[:flags].present?
+
+          @options[:flags] = FLAGS & (args.any? ? args.flatten : @options[:flags]).map(&:to_s).map(&:downcase)
         end
 
         def __render__
-          body = @options[:flags] ?
-            { value: @regexp, flags: @options[:flags].map(&:to_s).map(&:upcase).uniq.join('|') } :
-            @regexp
+          body = if @options[:flags]
+                   { value: @regexp, flags: @options[:flags].map(&:to_s).map(&:upcase).uniq.join('|') }
+                 else
+                   @regexp
+                 end
           filter = { @name => body }
           if @options.key?(:cache)
             filter[:_cache] = !!@options[:cache]
-            filter[:_cache_key] = @options[:cache].is_a?(TrueClass) || @options[:cache].is_a?(FalseClass) ?
-              @regexp.underscore : @options[:cache]
+            filter[:_cache_key] = if @options[:cache].is_a?(TrueClass) || @options[:cache].is_a?(FalseClass)
+                                    @regexp.underscore
+                                  else
+                                    @options[:cache]
+                                  end
           end
           { regexp: filter }
         end

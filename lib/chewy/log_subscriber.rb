@@ -20,13 +20,13 @@ module Chewy
       payload = event.payload
       description = block.call(payload)
 
-      if description.present?
-        subject = payload[:type].presence || payload[:index]
-        action = "#{subject} #{action} (#{event.duration.round(1)}ms)"
-        action = color(action, GREEN, true)
+      return unless description.present?
 
-        debug("  #{action} #{description}")
-      end
+      subject = payload[:type].presence || payload[:index]
+      action = "#{subject} #{action} (#{event.duration.round(1)}ms)"
+      action = color(action, GREEN, true)
+
+      debug("  #{action} #{description}")
     end
   end
 end

@@ -55,7 +55,7 @@ module Chewy
           subscriber = ActiveSupport::Notifications.subscribe('import_objects.chewy') do |*args|
             errors = args.last[:errors]
           end
-          import *args
+          import(*args)
           fail Chewy::ImportFailed.new(self, errors) if errors.present?
           true
         ensure

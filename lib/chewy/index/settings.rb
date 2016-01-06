@@ -67,7 +67,7 @@ module Chewy
                         name_or_hash = name_or_hash.to_sym
                         resolved = repository[name_or_hash]
                         resolved ? { name_or_hash => resolved } : {}
-            end
+                      end
             result.merge!(options)
           end
         else

@@ -20,9 +20,13 @@ module Chewy
       end
 
       def mappings_hash
-        mapping = children.any? ? {
-          (multi_field? ? :fields : :properties) => children.map(&:mappings_hash).inject(:merge)
-        } : {}
+        mapping = if children.any?
+                    {
+                      (multi_field? ? :fields : :properties) => children.map(&:mappings_hash).inject(:merge)
+                    }
+                  else
+                    {}
+                  end
         mapping.reverse_merge!(options)
         mapping.reverse_merge!(type: (children.any? ? 'object' : 'string'))
         { name => mapping }
@@ -43,13 +47,13 @@ module Chewy
                    object[name] || object[name.to_s]
                  else
                    object.send(name)
-        end
+                 end
 
         result = if result.respond_to?(:to_ary)
                    result.to_ary.map { |result| compose_children(result, *objects) }
                  else
                    compose_children(result, *objects)
-        end if children.any? && !multi_field?
+                 end if children.any? && !multi_field?
 
         { name => result.as_json(root: false) }
       end

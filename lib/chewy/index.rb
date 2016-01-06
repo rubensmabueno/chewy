@@ -39,7 +39,7 @@ module Chewy
           ) if name
         end
       end
-      @index_name or fail UndefinedIndex
+      @index_name || fail(UndefinedIndex)
     end
 
     # Defines type for the index. Arguments depends on adapter used. For
@@ -103,7 +103,7 @@ module Chewy
     #
     def self.types(*args)
       if args.any?
-        all.types *args
+        all.types(*args)
       else
         type_hash.values
       end
@@ -145,8 +145,6 @@ module Chewy
     def self.scopes
       public_methods - Chewy::Index.public_methods - type_names.map(&:to_sym)
     end
-
-    private
 
     def self.build_index_name(*args)
       options = args.extract_options!

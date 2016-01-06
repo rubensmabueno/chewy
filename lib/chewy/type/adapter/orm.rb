@@ -77,8 +77,11 @@ module Chewy
           import_options = args.extract_options!
           batch_size = import_options[:batch_size] || BATCH_SIZE
 
-          collection = args.empty? ? default_scope :
-            (args.one? && args.first.is_a?(relation_class) ? args.first : args.flatten.compact)
+          collection = if args.empty?
+                         default_scope
+                       else
+                         args.one? && args.first.is_a?(relation_class) ? args.first : args.flatten.compact
+                       end
 
           if collection.is_a?(relation_class)
             import_scope(collection, batch_size, &block)

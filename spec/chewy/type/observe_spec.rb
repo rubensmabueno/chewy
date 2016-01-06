@@ -32,7 +32,7 @@ describe Chewy::Type::Import do
                                      ->(*) { previous_changes.try(:[], :country_id) || country }
                                    else
                                      ->(*) { changes['country_id'] || previous_changes['country_id'] || country }
-        end
+                                   end
 
       stub_model(:city) do
         update_index(->(city) { "cities##{city.class.name.underscore}" }) { self }

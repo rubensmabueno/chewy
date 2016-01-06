@@ -224,7 +224,10 @@ describe Chewy::Type::Adapter::Mongoid, :mongoid do
       subject { described_class.new(City) }
 
       let(:data_comparer) do
-        ->(id, data) { objects = data[:index] || data[:delete]; !objects.map { |o| o.respond_to?(:id) ? o.id : o }.include?(id) }
+        lambda do |id, data|
+          objects = data[:index] || data[:delete]
+          !objects.map { |o| o.respond_to?(:id) ? o.id : o }.include?(id)
+        end
       end
 
       context 'implicit scope' do

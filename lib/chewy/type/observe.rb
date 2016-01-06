@@ -15,15 +15,17 @@ module Chewy
                               send(method)
                             else
                               instance_eval(&block)
-            end
+                            end
 
             reference = if type_name.is_a?(Proc)
-                          type_name.arity == 0 ?
-                            instance_exec(&type_name) :
+                          if type_name.arity == 0
+                            instance_exec(&type_name)
+                          else
                             type_name.call(self)
+                          end
                         else
                           type_name
-            end
+                        end
 
             Chewy.derive_type(reference).update_index(backreference, options)
           end

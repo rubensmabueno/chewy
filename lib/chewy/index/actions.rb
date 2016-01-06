@@ -31,7 +31,7 @@ module Chewy
         # Description: (http://www.elasticsearch.org/blog/changing-mapping-with-zero-downtime/).
         #
         def create(*args)
-          create! *args
+          create!(*args)
         rescue Elasticsearch::Transport::Transport::Errors::BadRequest
           false
         end
@@ -99,7 +99,7 @@ module Chewy
         def delete!(suffix = nil)
           # es-ruby >= 1.0.10 handles Elasticsearch::Transport::Transport::Errors::NotFound
           # by itself, so it is raised here
-          delete(suffix) or fail Elasticsearch::Transport::Transport::Errors::NotFound
+          delete(suffix) || fail(Elasticsearch::Transport::Transport::Errors::NotFound)
         end
 
         # Deletes and recreates index. Supports suffixes.

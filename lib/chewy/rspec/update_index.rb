@@ -224,7 +224,7 @@ RSpec::Matchers.define :update_index do |type_name, options = {}|
                 compare_attributes(value, real[key])
               else
                 real[key] == value
-      end
+              end
       result && equal
     end
   end

@@ -100,7 +100,7 @@ module Chewy
                index.types.first
              else
                fail Chewy::UnderivableType.new("Index `#{class_name}` has more than one type, please specify type via `#{index_name}#type_name`")
-      end
+             end
     end
 
     # Creates Chewy::Type ancestor defining index and adapter methods.
@@ -114,7 +114,7 @@ module Chewy
       type.send(:define_singleton_method, :index) { index }
       type.send(:define_singleton_method, :adapter) { adapter }
 
-      type.class_eval &block if block
+      type.class_eval(&block) if block
       type
     end
 
@@ -184,11 +184,11 @@ module Chewy
     def config
       Chewy::Config.instance
     end
-    delegate *Chewy::Config.delegated, to: :config
+    delegate(*Chewy::Config.delegated, to: :config)
 
     def repository
       Chewy::Repository.instance
     end
-    delegate *Chewy::Repository.delegated, to: :repository
+    delegate(*Chewy::Repository.delegated, to: :repository)
   end
 end

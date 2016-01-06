@@ -72,7 +72,7 @@ module Chewy
                        object.send delete_if
                      when Proc
                        delete_if.arity == 1 ? delete_if.call(object) : object.instance_exec(&delete_if)
-          end
+                     end
 
           !!delete
         end

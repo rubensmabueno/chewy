@@ -59,7 +59,10 @@ describe Chewy::Type::Import do
       dummy_cities.first.destroy
 
       imported = []
-      allow(CitiesIndex.client).to receive(:bulk) { |params| imported << params[:body]; nil }
+      allow(CitiesIndex.client).to receive(:bulk) do |params|
+        imported << params[:body]
+        nil
+      end
 
       city.import dummy_cities.map(&:id), batch_size: 2
       expect(imported.flatten).to match_array([
@@ -87,7 +90,7 @@ describe Chewy::Type::Import do
                      { :name.in => names }
                    else
                      { name: names }
-        end
+                   end
 
         stub_index(:cities) do
           define_type City.where(criteria) do

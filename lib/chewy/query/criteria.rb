@@ -164,7 +164,7 @@ module Chewy
                            filters
                          else
                            [_filters_join(filters, filter_mode)]
-        end
+                         end
 
         _filters_join([_request_types, *request_filter], :and)
       end
