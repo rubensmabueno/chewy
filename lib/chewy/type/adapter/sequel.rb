@@ -13,7 +13,7 @@ module Chewy
             target.is_a?(::Sequel::Dataset))
         end
 
-      private
+        private
 
         def cleanup_default_scope!
           if Chewy.logger && @default_scope != @default_scope.unordered.unlimited
@@ -54,7 +54,7 @@ module Chewy
           scope.where(primary_key => Array.wrap(ids))
         end
 
-        def model_of_relation relation
+        def model_of_relation(relation)
           relation.model
         end
 

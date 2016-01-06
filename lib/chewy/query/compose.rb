@@ -1,33 +1,32 @@
 module Chewy
   class Query
     module Compose
+      protected
 
-    protected
-
-      def _filtered_query query, filter, options = {}
+      def _filtered_query(query, filter, options = {})
         query = { match_all: {} } if !query.present? && filter.present?
 
         if filter.present?
           filtered = if query.present?
-            { query: { filtered: {
-              query: query,
-              filter: filter
-            } } }
-          else
-            { query: { filtered: {
-              filter: filter
-            } } }
+                       { query: { filtered: {
+                         query: query,
+                         filter: filter
+                       } } }
+                     else
+                       { query: { filtered: {
+                         filter: filter
+                       } } }
           end
           filtered[:query][:filtered].merge!(strategy: options[:strategy].to_s) if options[:strategy].present?
           filtered
         elsif query.present?
           { query: query }
         else
-          { }
+          {}
         end
       end
 
-      def _queries_join queries, logic
+      def _queries_join(queries, logic)
         queries = queries.compact
 
         if queries.many? || (queries.any? && logic == :must_not)
@@ -48,7 +47,7 @@ module Chewy
         end
       end
 
-      def _filters_join filters, logic
+      def _filters_join(filters, logic)
         filters = filters.compact
 
         if filters.many? || (filters.any? && logic == :must_not)

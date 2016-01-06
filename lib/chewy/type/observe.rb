@@ -8,21 +8,21 @@ module Chewy
           options = args.extract_options!
           method = args.first
 
-          Proc.new do
+          proc do
             backreference = if method && method.to_s == 'self'
-              self
-            elsif method
-              send(method)
-            else
-              instance_eval(&block)
+                              self
+                            elsif method
+                              send(method)
+                            else
+                              instance_eval(&block)
             end
 
             reference = if type_name.is_a?(Proc)
-              type_name.arity == 0 ?
-                instance_exec(&type_name) :
-                type_name.call(self)
-            else
-              type_name
+                          type_name.arity == 0 ?
+                            instance_exec(&type_name) :
+                            type_name.call(self)
+                        else
+                          type_name
             end
 
             Chewy.derive_type(reference).update_index(backreference, options)
@@ -31,11 +31,11 @@ module Chewy
 
         def extract_callback_options!(args)
           options = args.extract_options!
-          options.each_key.with_object({}) { |key, hash|
+          options.each_key.with_object({}) do |key, hash|
             hash[key] = options.delete(key) if [:if, :unless].include?(key)
-          }.tap {
+          end.tap do
             args.push(options) unless options.empty?
-          }
+          end
         end
       end
 

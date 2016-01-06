@@ -24,7 +24,7 @@ module Chewy
           criteria.request_options[:from].to_i
         end
 
-      private
+        private
 
         def _kaminari_config
           ::Kaminari.config

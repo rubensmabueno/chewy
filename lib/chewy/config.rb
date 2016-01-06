@@ -4,42 +4,42 @@ module Chewy
 
     attr_accessor :settings, :transport_logger, :transport_tracer, :logger,
 
-      # Default query compilation mode. `:must` by default.
-      # See Chewy::Query#query_mode for details
-      #
-      :query_mode,
+                  # Default query compilation mode. `:must` by default.
+                  # See Chewy::Query#query_mode for details
+                  #
+                  :query_mode,
 
-      # Default filters compilation mode. `:and` by default.
-      # See Chewy::Query#filter_mode for details
-      #
-      :filter_mode,
+                  # Default filters compilation mode. `:and` by default.
+                  # See Chewy::Query#filter_mode for details
+                  #
+                  :filter_mode,
 
-      # Default post_filters compilation mode. `nil` by default.
-      # See Chewy::Query#post_filter_mode for details
-      #
-      :post_filter_mode,
+                  # Default post_filters compilation mode. `nil` by default.
+                  # See Chewy::Query#post_filter_mode for details
+                  #
+                  :post_filter_mode,
 
-      # The first strategy in stack. `:base` by default.
-      # If you need to return to the previous chewy behavior -
-      # just set it to `:bypass`
-      #
-      :root_strategy,
+                  # The first strategy in stack. `:base` by default.
+                  # If you need to return to the previous chewy behavior -
+                  # just set it to `:bypass`
+                  #
+                  :root_strategy,
 
-      # Default request strategy middleware, used in e.g
-      # Rails controllers. See Chewy::Railtie::RequestStrategy
-      # for more info.
-      #
-      :request_strategy,
+                  # Default request strategy middleware, used in e.g
+                  # Rails controllers. See Chewy::Railtie::RequestStrategy
+                  # for more info.
+                  #
+                  :request_strategy,
 
-      # Use after_commit callbacks for RDBMS instead of
-      # after_save and after_destroy. True by default. Useful
-      # in tests with transactional fixtures or transactional
-      # DatabaseCleaner strategy.
-      #
-      :use_after_commit_callbacks
+                  # Use after_commit callbacks for RDBMS instead of
+                  # after_save and after_destroy. True by default. Useful
+                  # in tests with transactional fixtures or transactional
+                  # DatabaseCleaner strategy.
+                  #
+                  :use_after_commit_callbacks
 
     def self.delegated
-      public_instance_methods - self.superclass.public_instance_methods - Singleton.public_instance_methods
+      public_instance_methods - superclass.public_instance_methods - Singleton.public_instance_methods
     end
 
     def initialize
@@ -51,12 +51,12 @@ module Chewy
       @use_after_commit_callbacks = true
     end
 
-    def transport_logger= logger
+    def transport_logger=(logger)
       Chewy.client.transport.logger = logger
       @transport_logger = logger
     end
 
-    def transport_tracer= tracer
+    def transport_tracer=(tracer)
       Chewy.client.transport.tracer = tracer
       @transport_tracer = tracer
     end
@@ -111,12 +111,12 @@ module Chewy
       end
     end
 
-    def configuration= options
+    def configuration=(options)
       ActiveSupport::Deprecation.warn("`Chewy.configuration = {foo: 'bar'}` method is deprecated and will be removed soon, use `Chewy.settings = {foo: 'bar'}` method instead")
       self.settings = options
     end
 
-  private
+    private
 
     def yaml_settings
       @yaml_settings ||= begin

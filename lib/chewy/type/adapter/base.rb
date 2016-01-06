@@ -9,7 +9,7 @@ module Chewy
 
         # Returns `true` if this adapter is applicable for the given target.
         #
-        def self.accepts? target
+        def self.accepts?(target)
           true
         end
 
@@ -17,7 +17,7 @@ module Chewy
         # For returned value 'Product' will be generated class name `ProductsIndex::Product`
         #
         def name
-          raise NotImplementedError
+          fail NotImplementedError
         end
 
         # Underscored type name, user for elasticsearch type creation
@@ -32,8 +32,8 @@ module Chewy
         # For ORM/ODM it will be an array of ids for simple objects -
         # just objects themselves
         #
-        def identify collection
-          raise NotImplementedError
+        def identify(collection)
+          fail NotImplementedError
         end
 
         # Splits passed objects to groups according to `:batch_size` options.
@@ -43,8 +43,8 @@ module Chewy
         #
         # Returns true id all the block call returns true and false otherwise
         #
-        def import *args, &block
-          raise NotImplementedError
+        def import(*args, &block)
+          fail NotImplementedError
         end
 
         # Returns array of loaded objects for passed objects array. If some object
@@ -53,11 +53,11 @@ module Chewy
         #   load(double(id: 1), double(id: 2), double(id: 3)) #=>
         #     # [<Product id: 1>, nil, <Product id: 3>], assuming, #2 was not found
         #
-        def load *args
-          raise NotImplementedError
+        def load(*args)
+          fail NotImplementedError
         end
 
-      private
+        private
 
         def grouped_objects(objects)
           objects.to_a.group_by do |object|
@@ -68,10 +68,10 @@ module Chewy
         def delete_from_index?(object)
           delete_if = options[:delete_if]
           delete ||= case delete_if
-          when Symbol, String
-            object.send delete_if
-          when Proc
-            delete_if.arity == 1 ? delete_if.call(object) : object.instance_exec(&delete_if)
+                     when Symbol, String
+                       object.send delete_if
+                     when Proc
+                       delete_if.arity == 1 ? delete_if.call(object) : object.instance_exec(&delete_if)
           end
 
           !!delete

@@ -20,11 +20,7 @@ module Chewy
       end
 
       def method_missing(method, *args, &block)
-        if @attributes.key?(method.to_s)
-          @attributes[method.to_s]
-        else
-          nil
-        end
+        @attributes[method.to_s] if @attributes.key?(method.to_s)
       end
 
       def respond_to_missing?(method, _)

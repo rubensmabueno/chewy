@@ -21,10 +21,9 @@ require 'i18n/core_ext/hash'
 #     .to update_index(UsersIndex::User).and_reindex(user2).and_delete(user1) }
 #
 RSpec::Matchers.define :update_index do |type_name, options = {}|
-
   if !respond_to?(:failure_message) && respond_to?(:failure_message_for_should)
-    alias :failure_message :failure_message_for_should
-    alias :failure_message_when_negated :failure_message_for_should_not
+    alias_method :failure_message, :failure_message_for_should
+    alias_method :failure_message_when_negated, :failure_message_for_should_not
   end
 
   # Specify indexed records by passing record itself or id.
@@ -131,18 +130,18 @@ RSpec::Matchers.define :update_index do |type_name, options = {}|
 
     @reindex.each do |_, document|
       document[:match_count] = (!document[:expected_count] && document[:real_count] > 0) ||
-        (document[:expected_count] && document[:expected_count] == document[:real_count])
+                               (document[:expected_count] && document[:expected_count] == document[:real_count])
       document[:match_attributes] = document[:expected_attributes].blank? ||
-        compare_attributes(document[:expected_attributes], document[:real_attributes])
+                                    compare_attributes(document[:expected_attributes], document[:real_attributes])
     end
     @delete.each do |_, document|
       document[:match_count] = (!document[:expected_count] && document[:real_count] > 0) ||
-        (document[:expected_count] && document[:expected_count] == document[:real_count])
+                               (document[:expected_count] && document[:expected_count] == document[:real_count])
     end
 
     @updated.any? && @missed_reindex.none? && @missed_delete.none? &&
-    @reindex.all? { |_, document| document[:match_count] && document[:match_attributes] } &&
-    @delete.all? { |_, document| document[:match_count] }
+      @reindex.all? { |_, document| document[:match_count] && document[:match_attributes] } &&
+      @delete.all? { |_, document| document[:match_count] }
   end
 
   failure_message do
@@ -162,7 +161,7 @@ RSpec::Matchers.define :update_index do |type_name, options = {}|
           output << "\n   #{document[:expected_count]} times, but was reindexed #{document[:real_count]} times" if document[:expected_count] && !document[:match_count]
           output << "\n   with #{document[:expected_attributes]}, but it was reindexed with #{document[:real_attributes]}" if document[:expected_attributes].present? && !document[:match_attributes]
         else
-          output << ", but it was not"
+          output << ', but it was not'
         end
         output << "\n"
       end
@@ -174,7 +173,7 @@ RSpec::Matchers.define :update_index do |type_name, options = {}|
         if document[:real_count] > 0 && document[:expected_count] && !document[:match_count]
           output << "\n   #{document[:expected_count]} times, but was deleted #{document[:real_count]} times"
         else
-          output << ", but it was not"
+          output << ', but it was not'
         end
         output << "\n"
       end
@@ -185,23 +184,21 @@ RSpec::Matchers.define :update_index do |type_name, options = {}|
 
   failure_message_when_negated do
     if @updated.any?
-      "Expected index `#{type_name}` not to be updated, but it was with #{
-        @updated.map(&:values).flatten.group_by { |documents| documents[:_id] }.map do |id, documents|
+      "Expected index `#{type_name}` not to be updated, but it was with #{@updated.map(&:values).flatten.group_by { |documents| documents[:_id] }.map do |id, documents|
           "\n  document id `#{id}` (#{documents.count} times)"
-        end.join
-      }\n"
+        end.join}\n"
     end
   end
 
   def agnostic_stub
     if defined?(Mocha) && RSpec.configuration.mock_framework.to_s == 'RSpec::Core::MockingAdapters::Mocha'
-      "type.stubs(:bulk).with"
+      'type.stubs(:bulk).with'
     else
-      "allow(type).to receive(:bulk)"
+      'allow(type).to receive(:bulk)'
     end
   end
 
-  def extract_documents *args
+  def extract_documents(*args)
     options = args.extract_options!
 
     expected_count = options[:times] || options[:count]
@@ -219,20 +216,20 @@ RSpec::Matchers.define :update_index do |type_name, options = {}|
     end]
   end
 
-  def compare_attributes expected, real
+  def compare_attributes(expected, real)
     expected.inject(true) do |result, (key, value)|
       equal = if value.is_a?(Array) && real[key].is_a?(Array)
-        array_difference(value, real[key]) && array_difference(real[key], value)
-      elsif value.is_a?(Hash) && real[key].is_a?(Hash)
-        compare_attributes(value, real[key])
-      else
-        real[key] == value
+                array_difference(value, real[key]) && array_difference(real[key], value)
+              elsif value.is_a?(Hash) && real[key].is_a?(Hash)
+                compare_attributes(value, real[key])
+              else
+                real[key] == value
       end
       result && equal
     end
   end
 
-  def array_difference first, second
+  def array_difference(first, second)
     difference = first.to_ary.dup
     second.to_ary.each do |element|
       if index = difference.index(element)

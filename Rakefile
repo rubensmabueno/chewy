@@ -4,4 +4,4 @@ require 'elasticsearch/extensions/test/cluster/tasks'
 
 RSpec::Core::RakeTask.new(:spec)
 
-task :default => :spec
+task default: :spec

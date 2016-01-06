@@ -16,7 +16,7 @@ module Chewy
       render_action('Delete by Query', event) { |payload| payload[:request] }
     end
 
-    def render_action action, event, &block
+    def render_action(action, event, &block)
       payload = event.payload
       description = block.call(payload)
 

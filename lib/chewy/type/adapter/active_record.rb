@@ -4,14 +4,13 @@ module Chewy
   class Type
     module Adapter
       class ActiveRecord < Orm
-
         def self.accepts?(target)
           defined?(::ActiveRecord::Base) && (
             target.is_a?(Class) && target < ::ActiveRecord::Base ||
             target.is_a?(::ActiveRecord::Relation))
         end
 
-      private
+        private
 
         def cleanup_default_scope!
           if Chewy.logger && (@default_scope.arel.orders.present? ||

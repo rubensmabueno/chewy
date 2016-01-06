@@ -1,7 +1,6 @@
 module Chewy
   module RakeHelper
     class << self
-
       def subscribe_task_stats!
         ActiveSupport::Notifications.subscribe('import_objects.chewy') do |name, start, finish, id, payload|
           duration = (finish - start).round(2)
@@ -26,12 +25,12 @@ module Chewy
         end
       end
 
-      def normalize_index index
+      def normalize_index(index)
         "#{index.to_s.gsub(/index\z/i, '').camelize}Index".constantize
       end
 
       # Performs zero downtime reindexing of all documents in the specified index.
-      def reset_index index
+      def reset_index(index)
         index = normalize_index(index)
         puts "Resetting #{index}"
         index.reset! (Time.now.to_f * 1000).round
@@ -43,7 +42,7 @@ module Chewy
         Chewy::Index.descendants.each { |index| reset_index index }
       end
 
-      def update_index index
+      def update_index(index)
         index = normalize_index(index)
         puts "Updating #{index}"
         if index.exists?

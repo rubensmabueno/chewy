@@ -25,14 +25,14 @@ module Chewy
     # Chewy index current type belongs to. Defined inside `Chewy.create_type`
     #
     def self.index
-      raise NotImplementedError
+      fail NotImplementedError
     end
 
     # Current type adapter. Defined inside `Chewy.create_type`, derived from
     # `Chewy::Index.define_type` arguments.
     #
     def self.adapter
-      raise NotImplementedError
+      fail NotImplementedError
     end
 
     # Returns type name string
@@ -57,7 +57,7 @@ module Chewy
     end
 
     def self.const_missing(name)
-      to_resolve = "#{self.to_s}::#{name}"
+      to_resolve = "#{to_s}::#{name}"
       to_resolve[index.to_s] = ''
 
       @__resolved_constants ||= {}

@@ -17,7 +17,7 @@ module Chewy
         #
         # See adapters documentation for more details.
         #
-        def import *args
+        def import(*args)
           import_options = args.extract_options!
           bulk_options = import_options.reject { |k, v| ![:refresh, :suffix].include?(k) }.reverse_merge!(refresh: true)
 
@@ -50,13 +50,13 @@ module Chewy
         #
         # See adapters documentation for more details.
         #
-        def import! *args
+        def import!(*args)
           errors = nil
           subscriber = ActiveSupport::Notifications.subscribe('import_objects.chewy') do |*args|
             errors = args.last[:errors]
           end
           import *args
-          raise Chewy::ImportFailed.new(self, errors) if errors.present?
+          fail Chewy::ImportFailed.new(self, errors) if errors.present?
           true
         ensure
           ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
@@ -64,7 +64,7 @@ module Chewy
 
         # Wraps elasticsearch-ruby client indices bulk method.
         # Adds `:suffix` option to bulk import to index with specified suffix.
-        def bulk options = {}
+        def bulk(options = {})
           suffix = options.delete(:suffix)
 
           result = client.bulk options.merge(index: index.build_index_name(suffix: suffix), type: type_name)
@@ -73,7 +73,7 @@ module Chewy
           extract_errors result
         end
 
-      private
+        private
 
         def bulk_body(action_objects, indexed_objects = nil)
           action_objects.flat_map do |action, objects|
@@ -129,7 +129,7 @@ module Chewy
           end
         end
 
-        def fill_payload_import payload, action_objects
+        def fill_payload_import(payload, action_objects)
           imported = Hash[action_objects.map { |action, objects| [action, objects.count] }]
           imported.each do |action, count|
             payload[:import] ||= {}
@@ -138,7 +138,7 @@ module Chewy
           end
         end
 
-        def fill_payload_errors payload, errors
+        def fill_payload_errors(payload, errors)
           errors.each do |action, errors|
             errors.each do |error, documents|
               payload[:errors] ||= {}
@@ -149,20 +149,20 @@ module Chewy
           end
         end
 
-        def object_data object, crutches = nil
+        def object_data(object, crutches = nil)
           build_root.compose(object, crutches)[type_name.to_sym]
         end
 
-        def extract_errors result
+        def extract_errors(result)
           result && result['items'].map do |item|
             action = item.keys.first.to_sym
             data = item.values.first
-            {action: action, id: data['_id'], error: data['error']} if data['error']
+            { action: action, id: data['_id'], error: data['error'] } if data['error']
           end.compact.group_by { |item| item[:action] }.map do |action, items|
             errors = items.group_by { |item| item[:error] }.map do |error, items|
-              {error => items.map { |item| item[:id] }}
+              { error => items.map { |item| item[:id] } }
             end.reduce(&:merge)
-            {action => errors}
+            { action => errors }
           end.reduce(&:merge) || {}
         end
 
@@ -177,11 +177,11 @@ module Chewy
 
           indexed_objects = {}
 
-          while result = client.scroll(scroll_id: result['_scroll_id'], scroll: '1m') do
+          while result = client.scroll(scroll_id: result['_scroll_id'], scroll: '1m')
             break if result['hits']['hits'].empty?
 
             result['hits']['hits'].map do |hit|
-              parent = hit.has_key?('_parent') ? hit['_parent'] : hit['fields']['_parent']
+              parent = hit.key?('_parent') ? hit['_parent'] : hit['fields']['_parent']
               indexed_objects[hit['_id']] = { parent: parent }
             end
           end

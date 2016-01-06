@@ -3,10 +3,10 @@ module Chewy
     module Nodes
       class Base
         def render
-          raise NotImplementedError
+          fail NotImplementedError
         end
 
-        def eql? other
+        def eql?(other)
           other.is_a?(self.class) && instance_variables.all? do |ivar|
             instance_variable_get(ivar).eql? other.instance_variable_get(ivar)
           end

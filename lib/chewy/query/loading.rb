@@ -84,7 +84,7 @@ module Chewy
         chain { criteria.update_options preload: options, loaded_objects: false }
       end
 
-    private
+      private
 
       def _load_objects!
         options = criteria.options[:preload]

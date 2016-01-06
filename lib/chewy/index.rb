@@ -39,7 +39,7 @@ module Chewy
           ) if name
         end
       end
-      @index_name or raise UndefinedIndex
+      @index_name or fail UndefinedIndex
     end
 
     # Defines type for the index. Arguments depends on adapter used. For
@@ -101,7 +101,7 @@ module Chewy
     #   UsersIndex.filters { name =~ 'ro' }.types(:admin, :manager)
     #   UsersIndex.types(:admin, :manager).filters { name =~ 'ro' } # the same as the first example
     #
-    def self.types *args
+    def self.types(*args)
       if args.any?
         all.types *args
       else
@@ -146,11 +146,11 @@ module Chewy
       public_methods - Chewy::Index.public_methods - type_names.map(&:to_sym)
     end
 
-  private
+    private
 
-    def self.build_index_name *args
+    def self.build_index_name(*args)
       options = args.extract_options!
-      [options[:prefix], args.first || index_name, options[:suffix]].reject(&:blank?).join(?_)
+      [options[:prefix], args.first || index_name, options[:suffix]].reject(&:blank?).join('_')
     end
 
     def self.settings_hash
@@ -159,7 +159,7 @@ module Chewy
 
     def self.mappings_hash
       mappings = types.map(&:mappings_hash).inject(:merge)
-      mappings.present? ? {mappings: mappings} : {}
+      mappings.present? ? { mappings: mappings } : {}
     end
 
     def self.index_params

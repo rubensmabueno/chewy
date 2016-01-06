@@ -113,7 +113,7 @@ describe Chewy do
 
   describe '.client' do
     let!(:initial_client) { Thread.current[:chewy_client] }
-    let(:block) { proc { } }
+    let(:block) { proc {} }
     let(:mock_client) { double(:client) }
 
     before do

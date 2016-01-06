@@ -5,7 +5,8 @@ module Chewy
       attr_accessor :parent
 
       def initialize(name, options = {})
-        @name, @options = name.to_sym, options.deep_symbolize_keys
+        @name = name.to_sym
+        @options = options.deep_symbolize_keys
         @value = @options.delete(:value)
         @children = []
       end
@@ -15,7 +16,7 @@ module Chewy
       end
 
       def object_field?
-        (children.any? && options[:type].blank?) || ['object', 'nested'].include?(options[:type].to_s)
+        (children.any? && options[:type].blank?) || %w(object nested).include?(options[:type].to_s)
       end
 
       def mappings_hash
@@ -24,36 +25,36 @@ module Chewy
         } : {}
         mapping.reverse_merge!(options)
         mapping.reverse_merge!(type: (children.any? ? 'object' : 'string'))
-        {name => mapping}
+        { name => mapping }
       end
 
       def compose(object, *parent_objects)
         objects = ([object] + parent_objects.flatten).uniq
 
         result = if value && value.is_a?(Proc)
-          if value.arity == 0
-            object.instance_exec(&value)
-          elsif value.arity < 0
-            value.call(*object)
-          else
-            value.call(*objects.first(value.arity))
-          end
-        elsif object.is_a?(Hash)
-          object[name] || object[name.to_s]
-        else
-          object.send(name)
+                   if value.arity == 0
+                     object.instance_exec(&value)
+                   elsif value.arity < 0
+                     value.call(*object)
+                   else
+                     value.call(*objects.first(value.arity))
+                   end
+                 elsif object.is_a?(Hash)
+                   object[name] || object[name.to_s]
+                 else
+                   object.send(name)
         end
 
         result = if result.respond_to?(:to_ary)
-          result.to_ary.map { |result| compose_children(result, *objects) }
-        else
-          compose_children(result, *objects)
+                   result.to_ary.map { |result| compose_children(result, *objects) }
+                 else
+                   compose_children(result, *objects)
         end if children.any? && !multi_field?
 
-        {name => result.as_json(root: false)}
+        { name => result.as_json(root: false) }
       end
 
-    private
+      private
 
       def compose_children(value, *parent_objects)
         children.map { |field| field.compose(value, *parent_objects) if value }.compact.inject(:merge)
